@@ -5,75 +5,59 @@
         <img src="@/assets/logo.png" alt="" />
       </div>
       <div class="sign-up">
-        <h1>Sign Up</h1>
-        <img class="rect" src="@/assets/Rectangle.png" alt="" />
-        <p>Register now and start managing your inventory like a boss</p>
-        <form @submit.prevent="signUp">
-          <h3>Name</h3>
-          <input type="text" name="name" v-model="userInfo.fullName" />
+        <h1>Log In</h1>
+        <img src="@/assets/purple.png" alt="" />
+        <p>Sign in to start managing your inventory like a boss</p>
+        <form @submit.prevent="logIn">
           <h3>Email</h3>
-          <input type="text" name="email" v-model="userInfo.email" />
-          <h3>Shop Name</h3>
-          <input type="text" name="shopname" v-model="userInfo.shopName" />
+          <input type="text" name="email" v-model="userDetails.email" />
           <h3>Password</h3>
-          <input type="password" name="password" v-model="userInfo.password" />
-          <h3>Password Confirm</h3>
           <input
             type="password"
-            name="confirm"
-            v-model="userInfo.confirmPassword"
+            name="password"
+            v-model="userDetails.password"
           />
-          <button type="submit">Sign Up</button>
+          <button type="submit">Login</button>
         </form>
         <div class="already">
           <span class="black">Already have an account?&nbsp;</span>
-          <span class="blue" @click="pushtoLogin">Login</span>
+          <span class="blue" @click="pushtoHome">Sign Up</span>
         </div>
       </div>
     </div>
     <div class="sub">
-      <img src="@/assets/sub.png" alt="" />
+      <img src="@/assets/login.png" alt="" />
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-// @ is an alias to /src
-// {
-//     "fullName": "Ralph Williams",
-//     "email": "ralph@mail.com",
-//     "shopName": "Enyata",
-//     "password": "12345678",
-//     "confirmPassword": "12345678"
-// }
-
 export default {
-  name: 'HomeView',
-  components: {},
+  name: 'LogInView',
   data() {
     return {
-      userInfo: {
-        fullName: '',
+      userDetails: {
         email: '',
-        shopName: '',
         password: '',
-        confirmPassword: '',
       },
     };
   },
   methods: {
-    pushtoLogin() {
-      this.$router.push('/login');
+    pushtoHome() {
+      this.$router.push('/');
     },
 
-    signUp() {
+    logIn() {
       axios
         .post(
-          'https://enyata-inventory.herokuapp.com/api/v1/auth/signup',
-          this.userInfo
+          'https://enyata-inventory.herokuapp.com/api/v1/auth/login',
+          this.userDetails
         )
-        .then((response) => alert(response.data.message));
+        .then((response) => {
+          localStorage.setItem('token', response.data.data.token);
+          this.$router.push('/dashboard');
+        });
     },
   },
 };
@@ -83,10 +67,7 @@ export default {
 .layout {
   display: flex;
   gap: 60px;
-}
-
-.rect {
-  margin-top: 2px;
+  max-width: 100%;
 }
 
 .form {
@@ -95,7 +76,7 @@ export default {
 }
 
 .sub {
-  background-color: blue;
+  background-color: #873ab6;
   width: 100%;
   height: 100vh;
 }
@@ -160,7 +141,7 @@ input {
 }
 
 button {
-  background: #2656d1;
+  background: #873ab6;
   box-shadow: 0px 16px 24px rgba(38, 86, 209, 0.2);
   border-radius: 8px;
   width: 357px;
@@ -174,7 +155,6 @@ button {
   /* identical to box height, or 27px */
   border: none;
   color: #ffffff;
-  cursor: pointer;
 }
 
 .already {
@@ -213,5 +193,15 @@ button {
   position: absolute;
   top: 15%;
   left: 30%;
+}
+
+button {
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 420px) {
+  .sub {
+    display: none;
+  }
 }
 </style>
